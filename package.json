@@ -1,0 +1,32 @@
+{
+  "name": "auth-module",
+  "version": "1.0.0",
+  "description": "authentication implemented in node",
+  "main": "app.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Xerenz/node-auth-module.git"
+  },
+  "keywords": [
+    "auth"
+  ],
+  "author": "Martin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Xerenz/node-auth-module/issues"
+  },
+  "homepage": "https://github.com/Xerenz/node-auth-module#readme",
+  "dependencies": {
+    "bcrypt": "^4.0.1",
+    "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "mongoose": "^5.9.7",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0",
+    "passport-local-mongoose": "^6.0.1",
+    "save": "^2.4.0"
+  }
+}
