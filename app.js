@@ -1,16 +1,27 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const passport = require("passport");
+const session = require("express-session");
+const cookieParser = require("cookie-parser");
+
+const User = require("./models/user");
 
 mongoose.connect("mongodb://localhost/auth")
-.then(() => {
-    console.log("Mongo connected");
-})
-.catch(err => {
-    console.log("Error connecting Mongo");
-});
-
+    .then(() => console.log("Mongo connected"))
+    .catch(err => console.log("Error connecting Mongo"));
 
 const app = express();
+
+app.set("view engine", "ejs");
+app.use(cookieParser());
+app.use(session({
+    secret : process.env.SECRET || "AUTH_SECRET_HERE",
+    resave : false,
+    saveUninitialized : false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 app.get("/", (req, res) => {
     res.send("Working properly");
