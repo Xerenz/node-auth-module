@@ -6,7 +6,7 @@ const urlencodedParser = bodyParser.urlencoded({ extended : false});
 module.exports = function(app) {
 
     app.get("/login", (req, res) => {
-
+        res.render("login");
     });
 
     app.get("/register", (req, res) => {
