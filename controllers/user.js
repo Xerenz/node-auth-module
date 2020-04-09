@@ -9,8 +9,8 @@ module.exports = function(app) {
         res.render("login");
     });
 
-    app.get("/register", (req, res) => {
-
+    app.get("/signup", (req, res) => {
+        res.render("signup");
     });
 
     app.get("/profile", (req, res) => {
@@ -21,7 +21,7 @@ module.exports = function(app) {
 
     });
 
-    app.post("/register", (req, res) => {
+    app.post("/signup", (req, res) => {
 
     });
 }

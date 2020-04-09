@@ -8,7 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-    <title>App-Login</title>
+    <title>App-Signup</title>
   </head>
   <body>
     <div class="container">
@@ -22,13 +22,22 @@
         <div>
           <form>
             <div class="form-group row">
-              <input type="email" name="username" class="form-control col-4" id="enterEmail" placeholder="Email or username">
+                <input type="text" name="name" class="form-control col-4" id="enterName" placeholder="Name">
+            </div>
+            <div class="form-group row">
+              <input type="email" name="username" class="form-control col-4" id="enterEmail" placeholder="Email">
+            </div>
+            <div class="form-group row">
+                <input type="phone" name="phone" class="form-control col-4" id="enterPhone" placeholder="Phone number">
             </div>
             <div class="form-group row">
               <input type="password" name="password" class="form-control col-4" id="enterPass" placeholder="Password">
             </div>
             <div class="form-group row">
-              <button type="submit" class="btn btn-primary">Login</button>
+                <input type="password" name="confirmPassword" class="form-control col-4" id="enterPassAgain" placeholder="Confirm password">
+            </div>
+            <div class="form-group row">
+              <button type="submit" class="btn btn-primary">Signup</button>
             </div>
           </form>  
         </div>
