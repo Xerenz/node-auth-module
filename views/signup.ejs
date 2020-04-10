@@ -10,11 +10,17 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <title>Signup - Delether</title>
+    <title>Signup - App</title>
   </head>
   <body>
     <div class="container">
       <div>
+
+        <% if (error) { %>  
+          <div class="row">
+            <p class="alert alert-danger"><%= error %></p>
+          </div>
+        <% } %>
 
         <div class="row">
           <a href="/login" class="col-2 lead text-center">Login</a>

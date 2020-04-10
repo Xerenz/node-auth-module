@@ -7,6 +7,8 @@ const urlencodedParser = bodyParser.urlencoded({ extended : false });
 
 var error = null;
 
+/*Controller for Authentication*/
+
 module.exports = function(app) {
 
     app.get("/login", (req, res) => {
@@ -21,8 +23,33 @@ module.exports = function(app) {
         res.send("This is your profile page");
     });
 
-    app.post("/login", urlencodedParser, (req, res) => {
-        
+    app.post("/login", urlencodedParser, (req, res, next) => {
+        passport.authenticate("local", (err, user, info) => {
+            if (err) {
+                // handle errors
+
+                if (err.name === 'IncorrectPasswordError' || 
+                    err.name === 'IncorrectUsernameError') {
+                    error = "The username or password is incorrect";
+                    console.log(err);
+                    return res.redirect("/login");
+                }     
+                console.log(err);
+                error = "There seems to be a problem please try again later!";
+                return res.redirect("/login");
+            }
+
+            req.logIn(user, err => {
+                if (err) {
+                    error = "Something went wrong please try again";
+                    console.log(err);
+                    return res.redirect("/login");
+                }
+                console.log("user successfully loggedIn");
+                return res.redirect("/profile");
+            });
+
+        })(req, res, next);
     });
 
     app.post("/signup", urlencodedParser, (req, res, next) => {
@@ -41,13 +68,6 @@ module.exports = function(app) {
                     console.log(error);
 
                     res.redirect("/signup");
-                }
-                else if (err.name === 'IncorrectPasswordError' || 
-                    err.name === 'IncorrectUsernameError') {
-                    error = "The username or password is incorrect";
-                    console.log(err);
-
-                    res.redirect(register);
                 }
                 else {
                     error = "Something seems to be wrong! Please try again after some time";
@@ -69,12 +89,14 @@ module.exports = function(app) {
                     return res.redirect("/login");
                 }
 
-                req.logIn(user, (err) => {
-                    if (err) return console.log(err);
-
+                req.logIn(user, err => {
+                    if (err) {
+                        error = "Something went wrong please try again";
+                        console.log(err);
+                        return res.redirect("/login");
+                    }
                     console.log("logging the user");
-
-                    res.redirect("/profile");
+                    return res.redirect("/profile");
                 });
 
             })(req, res, next);            
