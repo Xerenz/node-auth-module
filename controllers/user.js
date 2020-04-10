@@ -1,27 +1,83 @@
-const User = require("../models/user");
+const passport = require("passport");
 const bodyParser = require("body-parser");
 
-const urlencodedParser = bodyParser.urlencoded({ extended : false});
+const User = require("../models/user");
+
+const urlencodedParser = bodyParser.urlencoded({ extended : false });
+
+var error = null;
 
 module.exports = function(app) {
 
     app.get("/login", (req, res) => {
-        res.render("login");
+        res.render("login", {error : error});
     });
 
     app.get("/signup", (req, res) => {
-        res.render("signup");
+        res.render("signup", {error : error});
     });
 
     app.get("/profile", (req, res) => {
-
+        res.send("This is your profile page");
     });
 
-    app.post("/login", (req, res) => {
-
+    app.post("/login", urlencodedParser, (req, res) => {
+        
     });
 
-    app.post("/signup", (req, res) => {
+    app.post("/signup", urlencodedParser, (req, res, next) => {
+        let newUser = User({
+            name : req.body.name,
+            phone : req.body.phone,
+            username : req.body.username
+        });
 
+        User.register(newUser, req.body.password, (err, user) => {
+            if (err) {
+                // handle common errors here
+
+                if (err.name === 'UserExistsError') {
+                    error = "Username already exists!";
+                    console.log(error);
+
+                    res.redirect("/signup");
+                }
+                else if (err.name === 'IncorrectPasswordError' || 
+                    err.name === 'IncorrectUsernameError') {
+                    error = "The username or password is incorrect";
+                    console.log(err);
+
+                    res.redirect(register);
+                }
+                else {
+                    error = "Something seems to be wrong! Please try again after some time";
+                    console.log(error, err);
+
+                    res.redirect("/signup");
+                }
+            }
+
+            passport.authenticate("local", (err, user, info) => {
+                if (err) {
+                    console.log(err);
+                    return next(err);
+                }
+
+                if (!user) {
+                    console.log("No user object here");
+                    error = "Please try login again.";
+                    return res.redirect("/login");
+                }
+
+                req.logIn(user, (err) => {
+                    if (err) return console.log(err);
+
+                    console.log("logging the user");
+
+                    res.redirect("/profile");
+                });
+
+            })(req, res, next);            
+        });
     });
 }

@@ -7,10 +7,11 @@ const UserSchema = new Schema(
     {
         name : String,
         phone : String,
+        username : String,
         password : String,
 
-        isAdmin : Boolean,
-        isVerified : Boolean,
+        isAdmin : {type : Boolean, default : false},
+        isVerified : {type : Boolean, default : false},
 
         token : String,
         expires : Date
