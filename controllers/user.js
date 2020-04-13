@@ -1,4 +1,6 @@
+const async = require("async");
 const passport = require("passport");
+const nodemailer = require("nodemailer");
 const bodyParser = require("body-parser");
 
 const User = require("../models/user");
@@ -101,5 +103,13 @@ module.exports = function(app) {
 
             })(req, res, next);            
         });
+    });
+
+    app.get("/forgot", (req, res) => {
+        res.send("Forgot password page");
+    });
+
+    app.post("/forgot", (req, res) => {
+
     });
 }
