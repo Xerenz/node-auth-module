@@ -1,4 +1,5 @@
 const async = require("async");
+const crypto = require("crypto");
 const passport = require("passport");
 const nodemailer = require("nodemailer");
 const bodyParser = require("body-parser");
@@ -106,10 +107,61 @@ module.exports = function(app) {
     });
 
     app.get("/forgot", (req, res) => {
-        res.send("Forgot password page");
+        res.render("forgot");
     });
 
-    app.post("/forgot", (req, res) => {
+    app.post("/forgot", urlencodedParser, (req, res) => {
+        async.waterfall([
+            function(done) {
+                crypto.randomBytes(20, (err, buff) => {
+                    if (err) return done(err);
+                    const token = buff.toString('hex');
+                    done(err, token);
+                });
+            },
+            function(token, done) {
+                console.log("second function");
+                User.findOne({username : req.body.email}, (err, user) => {
+                    if (err) return done(err);
+                    if (!user) return console.log("No user found!"); // redirect to forgot with error
+                    
+                    user.token = token;
+                    user.expire = Date.now();
 
+                    user.save(err => {
+                        if (err) return done(err);
+                        done(err, token, user);
+                    });
+                });
+            },
+            function(token, user) {
+                let smtpTransporter = nodemailer.createTransport({
+                    service : 'Gmail',
+                    auth : {
+                        user : 'tech.dhishna@gmail.com',
+                        pass : 'JyothisDance@1337'
+                    }
+                });
+
+                let message = {
+                    to : user.username,
+                    from : 'Dhishna <tech.dhishna@gmail.com>',
+                    subject : 'Password Reset',
+                    body : `Hello ${user.name},
+                    
+You are recieving this mail because you have asked to reset your password.
+
+Please click on the following link or paste it in your browser to complete the process.
+
+${req.headers.host + '/reset/' + token}
+
+If you have not requested this please ignore this mail and your password will remain unchanged.
+
+Regards,`
+                }
+            }
+        ], err => {
+            if (err) return console.log(err);
+        })
     });
 }
