@@ -159,6 +159,10 @@ If you have not requested this please ignore this mail and your password will re
 
 Regards,`
                 }
+
+                smtpTransporter.sendMail(message, err => {
+                    done(err, 'done');
+                });
             }
         ], err => {
             if (err) return console.log(err);
