@@ -35,7 +35,7 @@ module.exports = function(app) {
             token : req.params.token,
             expires : {$gt : Date.now()}
         }, (err, user) => {
-            if (err) return done(err);
+            if (err) return console.log(err);
             if (!user) return console.log("No user found");
             res.render("reset", {token : req.params.token});
         });

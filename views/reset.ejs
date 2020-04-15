@@ -3,11 +3,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>App - Forgot Password</title>
+    <title>App - Reset Password</title>
 </head>
 <body>
-    <form action="/forgot" method="POST">
-        <input type="email" name="email" placeholder="Email" required>
+    <form action="/reset/<%= token %>" method="POST">
+        <input type="password" name="password" required>
+        <input type="password" name="confirm" required>
         <button type="submit">Reset</button>
     </form>
 </body>
