@@ -26,6 +26,21 @@ module.exports = function(app) {
         res.send("This is your profile page");
     });
 
+    app.get("/forgot", (req, res) => {
+        res.render("forgot");
+    });
+
+    app.get("/reset/:token", (req, res) => {
+        User.findOne({
+            token : req.params.token,
+            expires : {$gt : Date.now()}
+        }, (err, user) => {
+            if (err) return done(err);
+            if (!user) return console.log("No user found");
+            res.render("reset", {token : req.params.token});
+        });
+    });
+
     app.post("/login", urlencodedParser, (req, res, next) => {
         passport.authenticate("local", (err, user, info) => {
             if (err) {
@@ -106,10 +121,6 @@ module.exports = function(app) {
         });
     });
 
-    app.get("/forgot", (req, res) => {
-        res.render("forgot");
-    });
-
     app.post("/forgot", urlencodedParser, (req, res) => {
         async.waterfall([
             function(done) {
@@ -166,6 +177,55 @@ Regards,`
             }
         ], err => {
             if (err) return console.log(err);
-        })
+        });
+    });
+
+    app.post("/reset/:token", (req, res) => {
+        async.waterfall([
+            function(done) {
+                User.findOne({
+                    token : req.params.token,
+                    expires : {$gt : Date.now()}
+                }, (err, user) => {
+                    if (err) return done(err);
+                    if (!user) return console.log("No user found");
+
+                    user.token = null;
+                    user.expires = null;
+
+                    user.setPassword(req.body.password, err => {
+                        if (err) return done(err);
+                        console.log("Password has been changed.");
+                        done(err, user);
+                    });
+                });
+            },
+            function(user, done) {
+                let smtpTransporter = nodemailer.createTransport({
+                    service : 'Gmail',
+                    auth : {
+                        user : 'tech.dhishna@gmail.com',
+                        pass : 'JyothisDance@1337'
+                    }
+                });
+
+                let message = {
+                    to : user.username,
+                    from : 'Dhishna <tech.dhishna@gmail.com>',
+                    subject : 'Password Reset',
+                    body : `Hey ${user.name},
+
+This is to confirm that your password for the account ${user.username} has been reset.`
+                };
+
+                smtpTransporter.sendMail(message, err => {
+                    if (err) done(err);
+                    console.log("Mail sent to", user.username);
+                    done(err);
+                });
+            }
+        ], err => {
+            if (err) return console.log(err);
+        });
     });
 }
